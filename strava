@@ -1,0 +1,123 @@
+// ==UserScript==
+// @name Strava - Auto Like
+// @namespace Strava
+// @description Strava - Auto Like
+// @version 2016.07.21
+// @grant none
+// @match https://www.strava.com/*
+// ==/UserScript==
+
+
+version = '2016.07.21'
+var t = window.setInterval(checkLikes, 5000)
+
+div = document.createElement('div')
+ds = div.style
+ds.color = 'black'
+ds.backgroundColor = '#eeeeee' //'white'
+ds.position = 'fixed'
+ds.bottom = '130px'
+ds.left = '60px'
+ds.zIndex = '5000'
+ds.fontSize = '15px'
+ds.fontFamily = 'verdana'
+
+d1 = document.createElement('div')
+d2 = document.createElement('div')
+d3 = document.createElement('div')
+
+d1.id = 'd1'
+d1.textContent = '0 like buttons'
+d1.style.color = 'red'
+
+d2.id = 'd2'
+d2.textContent = 'scanning for like buttons'
+d3.innerHTML = 'Strava Like v' + version + ' by ' + 'Tox'
+div.appendChild(d1)
+div.appendChild(d2)
+div.appendChild(d3)
+document.body.appendChild(div)
+
+var isProfile = document.location.toString().indexOf('profile') !== -1
+
+function checkLikes(){
+	var d1 = document.getElementById('d1')
+	var d2 = document.getElementById('d2')
+
+//	var feedItem = document.getElementsByClassName('feedItem')
+//	var eoLikeButton = document.getElementsByClassName('eoLikeButton')
+	var jsaddkudo = document.getElementsByClassName('js-add-kudo')
+	//var liked = document.getElementsByClassName('AthleteFeedEntry')
+	//var co = jsaddkudo.length - liked.length
+	var co = jsaddkudo.length
+	if (co === 0){
+		d1.textContent = 'No like buttons found'
+	}
+	else {
+	   d1.textContent = co + ' like buttons.'
+	   d2.textContent = 'Press F9 to like bomb'
+       window.addEventListener('keydown', k, true )
+    }
+}
+
+var t2, t3
+
+function k(e){
+	if (e.keyCode !== 120) return
+	window.clearInterval(t)
+	d1.textContent = '0 likes given'
+	d2.textContent = 'Press ESC to cancel'
+	window.removeEventListener('keypress', k)
+	window.addEventListener('keypress', checkEscape)
+	if (!isProfile) {
+	   t2 = window.setInterval(scroll, 1000)
+	   t3 = window.setInterval(go, 4000)
+	   window.setTimeout(stop, 900000, 'auto stop after 15 minutes')
+	}
+	else {
+	   window.setTimeout(go, 6000)
+	   window.setTimeout(stop, 9000, 'limit reached for profile page')
+	}
+}
+
+function checkEscape(e){
+    if (e.keyCode === 27)
+        stop('Esc pressed')
+}
+
+function scroll(){
+    window.scrollTo(0,document.body.scrollHeight)
+}
+
+function go(){
+	var likes = parseInt(d1.textContent)
+	var c = document.getElementsByClassName('activity')
+	while(c.length !== 0) {
+		//var w = c[0].getElementsByClassName('eoWorkoutHeadline-link')
+		//var l = c[0].getElementsByClassName('liked')
+		var p = c[0].getElementsByClassName('js-add-kudo')
+		//if (w.length !== 0) {
+		//if (l.length === 0) {
+		if (p.length !== 0) {
+			var e = document.createEvent('HTMLEvents')
+			e.initEvent ('click', true, true)
+			p[0].dispatchEvent(e)
+			likes++
+			d1.textContent = likes + ' likes given'
+		}
+		//}}
+		c[0].parentNode.removeChild(c[0])
+	}
+	stop('end')
+	if (document.getElementsByClassName('empty-state').length !== 0)
+	   stop('end of feed detected')
+}
+
+function stop(reason){
+    window.clearInterval(t)
+    window.clearInterval(t2)
+    window.clearInterval(t3)
+    window.removeEventListener('keypress', checkEscape)
+    window.removeEventListener('keypress', k)
+    d2.textContent = 'stopped: ' + reason
+}
