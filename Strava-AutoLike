@@ -99,5 +99,5 @@ function stop(reason){
   window.clearInterval(t3)
   window.removeEventListener('keypress', checkEscape)
   window.removeEventListener('keypress', k)
-  d2.textContent = 'stopped: ' + reason
+  d2.textContent = 'Stopped: ' + reason
 }
