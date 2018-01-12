@@ -46,7 +46,7 @@ function checklikes(){
     d1.textContent = 'No like buttons found'
   }
   else {
-    d1.textContent = c + ' like buttons.'
+    d1.textContent = c + ' like buttons'
     d2.textContent = 'Press F9 to like bomb'
     d2.style.color = 'black'
     window.addEventListener('keydown', k, true )
