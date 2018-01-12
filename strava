@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 // ==UserScript==
 // @name Strava - Auto Like
 // @namespace Strava
@@ -121,3 +122,6 @@ function stop(reason){
     window.removeEventListener('keypress', k)
     d2.textContent = 'stopped: ' + reason
 }
+=======
+#strava
+>>>>>>> 8f8a00286805d7cbb37509c3f9af617cd81a31c7
