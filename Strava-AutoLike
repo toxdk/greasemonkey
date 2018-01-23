@@ -2,12 +2,12 @@
 // @name Strava - Auto Like
 // @namespace http://www.strava.com/
 // @description Strava - Auto Like
-// @version 2018.01.12
+// @version 2018.01.23
 // @grant none
 // @match https://www.strava.com/*
 // ==/UserScript==
 
-version = '2018.01.12'
+version = '2018.01.23'
 var t = window.setInterval(checklikes, 5000)
 var t2, t3
 
@@ -40,7 +40,14 @@ document.body.appendChild(div)
 function checklikes(){
   var d1 = document.getElementById('d1')
   var d2 = document.getElementById('d2')
-  var c = document.getElementsByClassName('btn btn-icon btn-icon-only btn-kudo btn-xs js-add-kudo').length
+  var c = 0
+  var activity = document.getElementsByClassName('activity')
+  for (var i = 0; i < activity.length; i++) {
+    var jsaddkudo = activity[i].getElementsByClassName('btn btn-icon btn-icon-only btn-kudo btn-xs js-add-kudo')
+    if (jsaddkudo.length !== 0) {
+      c++
+    }
+  }
   if (c === 0){
     d1.textContent = 'No like buttons found'
   }
@@ -76,8 +83,8 @@ function scroll(){
 function go(){
   var c = 0
   var activity = document.getElementsByClassName('activity')
-  while(activity.length !== 0) {
-    var jsaddkudo = activity[0].getElementsByClassName('btn btn-icon btn-icon-only btn-kudo btn-xs js-add-kudo')
+  for (var i = 0; i < activity.length; i++) {
+    var jsaddkudo = activity[i].getElementsByClassName('btn btn-icon btn-icon-only btn-kudo btn-xs js-add-kudo')
     if (jsaddkudo.length !== 0) {
       var e = document.createEvent('HTMLEvents')
       e.initEvent ('click', true, true)
@@ -85,7 +92,6 @@ function go(){
       c++
       d1.textContent = c + ' likes given'
     }
-    activity[0].parentNode.removeChild(activity[0])
   }
   stop('The End')
   if (document.getElementsByClassName('empty-state').length !== 0)
