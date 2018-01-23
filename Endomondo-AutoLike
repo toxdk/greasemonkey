@@ -2,12 +2,12 @@
 // @name Endomondo - Auto Like
 // @namespace http://www.endomondo.com/
 // @description Endomondo - Auto Like
-// @version 2018.01.12
+// @version 2018.01.23
 // @grant none
 // @match https://www.endomondo.com/*
 // ==/UserScript==
 
-version = '2018.01.12'
+version = '2018.01.23'
 var t = window.setInterval(checklikes, 5000)
 var t2, t3
 
@@ -40,7 +40,17 @@ document.body.appendChild(div)
 function checklikes(){
   var d1 = document.getElementById('d1')
   var d2 = document.getElementById('d2')
-  var c = document.getElementsByClassName('feedItem eoFeedWorkout').length - document.getElementsByClassName('feedItem-likeButton eoLikeButton ng-isolate-scope liked').length
+  var c = 0
+  var eofeedworkout = document.getElementsByClassName('feedItem eoFeedWorkout')
+  for (var i = 0; i < eofeedworkout.length; i++) {
+    var liked = eofeedworkout[i].getElementsByClassName('feedItem-likeButton eoLikeButton ng-isolate-scope liked')
+    if (liked.length === 0) {
+      var eolikebutton = eofeedworkout[i].getElementsByClassName('feedItem-likeButton eoLikeButton ng-isolate-scope')
+      if (eolikebutton.length !== 0) {
+        c++
+      }
+    }
+  }
   if (c === 0){
     d1.textContent = 'No like buttons found'
   }
@@ -75,11 +85,11 @@ function scroll(){
 
 function go(){
   var c = 0
-  var feeditem = document.getElementsByClassName('feedItem eoFeedWorkout')
-  while(feeditem.length !== 0) {
-    var liked = feeditem[0].getElementsByClassName('feedItem-likeButton eoLikeButton ng-isolate-scope liked')
-    var eolikebutton = feeditem[0].getElementsByClassName('feedItem-likeButton eoLikeButton ng-isolate-scope')
+  var eofeedworkout = document.getElementsByClassName('feedItem eoFeedWorkout')
+  for (var i = 0; i < eofeedworkout.length; i++) {
+    var liked = eofeedworkout[i].getElementsByClassName('feedItem-likeButton eoLikeButton ng-isolate-scope liked')
     if (liked.length === 0) {
+      var eolikebutton = eofeedworkout[i].getElementsByClassName('feedItem-likeButton eoLikeButton ng-isolate-scope')
       if (eolikebutton.length !== 0) {
         var e = document.createEvent('HTMLEvents')
         e.initEvent ('click', true, true)
@@ -88,7 +98,6 @@ function go(){
         d1.textContent = c + ' likes given'
       }
     }
-    feeditem[0].parentNode.removeChild(feeditem[0])
   }
   stop('The End')
   if (document.getElementsByClassName('empty-state').length !== 0)
