@@ -1,1 +1,134 @@
-#
+// ==UserScript==
+// @name Facebook - Auto Like
+// @namespace http://www.facebook.com/
+// @description Facebook - Auto Like
+// @version 2018.01.24
+// @grant none
+// @match https://www.facebook.com/*
+// ==/UserScript==
+
+version = '2018.01.23'
+var t = window.setInterval(checklikes, 5000)
+var t2, t3
+
+div = document.createElement('div')
+ds = div.style
+ds.color = '#000000' //'black'
+ds.backgroundColor = '#eeeeee' //'white'
+ds.position = 'fixed'
+ds.bottom = '120px'
+ds.left = '60px'
+ds.zIndex = '5000'
+ds.fontSize = '15px'
+ds.fontFamily = 'verdana'
+
+d1 = document.createElement('div')
+d2 = document.createElement('div')
+d3 = document.createElement('div')
+d1.id = 'd1'
+d1.textContent = '0 like buttons'
+d1.style.color = 'red'
+d2.id = 'd2'
+d2.textContent = 'Scanning for like buttons'
+d2.style.color = 'orange'
+d3.innerHTML = 'Facebook Like v' + version + ' by Tox'
+div.appendChild(d1)
+div.appendChild(d2)
+div.appendChild(d3)
+document.body.appendChild(div)
+
+function checklikes(){
+  var d1 = document.getElementById('d1')
+  var d2 = document.getElementById('d2')
+  var c = 0
+  var article = document.getElementsByClassName('_4-u2 mbm _4mrt _5jmm _5pat _5v3q _4-u8')
+  for (var i = 0; i < article.length; i++) {
+    var ufilinkbright = article[i].getElementsByClassName('UFILikeLink _4x9- _4x9_ _48-k UFILinkBright')
+    if (ufilinkbright.length === 0) {
+      var mhsimg = article[i].getElementsByClassName('mhs img')
+      if (mhsimg.length === 0) {
+        var fwb = article[i].getElementsByClassName('fwb')
+        if (fwb.length !== 0) {
+          var mws1 = fwb[0].innerText.toString()
+          var mws2 = 0 //mws1.search('xxx')
+          if (mws2 === 0) {
+            var ufilikelink = article[i].getElementsByClassName('UFILikeLink _4x9- _4x9_ _48-k')
+            if (ufilikelink.length !== 0) {
+              c++
+            }
+          }
+        }
+      }
+    }
+  }
+  if (c === 0){
+    d1.textContent = 'No like buttons found'
+  }
+  else {
+    d1.textContent = c + ' like buttons'
+    d2.textContent = 'Press F9 to like bomb'
+    d2.style.color = 'black'
+    window.addEventListener('keydown', k, true )
+  }
+}
+
+function k(e){
+  if (e.keyCode !== 120) return
+  window.clearInterval(t)
+  d1.textContent = '0 likes given'
+  d2.textContent = 'Press ESC to cancel'
+  window.removeEventListener('keypress', k)
+  window.addEventListener('keypress', checkescape)
+  //t2 = window.setInterval(scroll, 1000)
+  t3 = window.setInterval(go, 4000)
+  window.setTimeout(stop, 600000, 'Auto stop after 10 minutes')
+}
+
+function checkescape(e){
+  if (e.keyCode === 27)
+  stop('Esc pressed')
+}
+
+function scroll(){
+  window.scrollTo(0,document.body.scrollHeight)
+}
+
+function go(){
+  var c = 0
+  var article = document.getElementsByClassName('_4-u2 mbm _4mrt _5jmm _5pat _5v3q _4-u8')
+  for (var i = 0; i < article.length; i++) {
+    var ufilinkbright = article[i].getElementsByClassName('UFILikeLink _4x9- _4x9_ _48-k UFILinkBright')
+    if (ufilinkbright.length === 0) {
+      var mhsimg = article[i].getElementsByClassName('mhs img')
+      if (mhsimg.length === 0) {
+        var fwb = article[i].getElementsByClassName('fwb')
+        if (fwb.length !== 0) {
+          var mws1 = fwb[0].innerText.toString()
+          var mws2 = 0 //mws1.search('xxx')
+          if (mws2 === 0) {
+            var ufilikelink = article[i].getElementsByClassName('UFILikeLink _4x9- _4x9_ _48-k')
+            if (ufilikelink.length !== 0) {
+              var e = document.createEvent('HTMLEvents')
+              e.initEvent ('click', true, true)
+              ufilikelink[0].dispatchEvent(e)
+              c++
+              d1.textContent = c + ' likes given'
+            }
+          }
+        }
+      }
+    }
+  }
+  stop('The End')
+  if (document.getElementsByClassName('empty-state').length !== 0)
+  stop('End of feed detected')
+}
+
+function stop(reason){
+  window.clearInterval(t)
+  window.clearInterval(t2)
+  window.clearInterval(t3)
+  window.removeEventListener('keypress', checkEscape)
+  window.removeEventListener('keypress', k)
+  d2.textContent = 'Stopped: ' + reason
+}
